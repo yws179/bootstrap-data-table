@@ -3,8 +3,44 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script type="application/javascript" src="../lib/js/jquery-3.2.1.js"></script>
+    <script type="application/javascript" src="../lib/js/bootstrap.js"></script>
+    <script type="application/javascript" src="../src/bootstrap-data-table.js"></script>
+    <link rel="stylesheet" type="text/css" href="../lib/css/bootstrap.css">
 </head>
 <body>
-
+<div class="container">
+    <table id="tb-sample">
+        <caption>
+            title
+        </caption>
+        <thead></thead>
+        <tbody></tbody>
+    </table>
+</div>
 </body>
+<script>
+    $('#tb-sample').dataTable({
+      fields : {
+        id: '序号',
+        name: '姓名',
+        age: '年龄',
+        gender: '性别'
+      },
+      data: [
+        {
+          id: '1',
+          name: 'name',
+          age: '18',
+          gender: 'male'
+        },
+        {
+          id: '2',
+          name: 'name2',
+          age: '19',
+          gender: 'female'
+        }
+      ]
+    })
+</script>
 </html>
