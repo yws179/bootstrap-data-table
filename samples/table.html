@@ -10,18 +10,14 @@
 </head>
 <body>
 <div class="container">
-    <table id="tb-sample">
-        <caption>
-            title
-        </caption>
-        <thead></thead>
-        <tbody></tbody>
-    </table>
+    <table id="tb-sample"></table>
 </div>
 </body>
 <script>
     $('#tb-sample').dataTable({
-      fields : {
+      title: '用户',
+      filterable: true,
+      fields: {
         id: '序号',
         name: '姓名',
         age: '年龄',
