@@ -7,6 +7,7 @@
     <script type="application/javascript" src="../lib/js/bootstrap.js"></script>
     <script type="application/javascript" src="../src/bootstrap-data-table.js"></script>
     <link rel="stylesheet" type="text/css" href="../lib/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="../src/bootstrap-data-table.css">
 </head>
 <body>
 <div class="container">
@@ -16,27 +17,37 @@
 <script>
     $('#tb-sample').dataTable({
       title: '用户',
+      addible: true,
+      refreshable: true,
       filterable: true,
       fields: {
         id: '序号',
         name: '姓名',
         age: '年龄',
-        gender: '性别'
+        gender: '性别',
+        'bag.size': '背包大小'
       },
       data: [
         {
           id: '1',
           name: 'name',
           age: '18',
-          gender: 'male'
+          gender: 'male',
+          bag: {
+            size: 100
+          }
         },
         {
           id: '2',
           name: 'name2',
           age: '19',
-          gender: 'female'
+          gender: 'female',
+          bag: {
+            size: 100
+          }
         }
       ]
     })
+    // $('#tb-sample').dataTable().
 </script>
 </html>

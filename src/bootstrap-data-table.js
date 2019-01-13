@@ -2,7 +2,7 @@
  * Plugin:  bootstrap-data-table
  * Author:  Weisen Yan (严伟森)
  * Github:  https://github.com/yws179/bootstrap-data-table
- * Version: 0.0.1
+ * Version: 0.0.2
  * Licensed under the MIT license
  */
 
@@ -29,7 +29,7 @@
       throw new Error('This is not <table> DOM')
     }
     
-    this.$table = $table;
+    this.$table = $table
     
     this.$caption = this.$table.find('caption')
     
@@ -42,8 +42,10 @@
     this.data = this.options.data || []
     
     this.visibleData = this.data
-  
-    this.$btns = $([])
+    
+    this.addible = this.options.addible
+    
+    this.refreshable = this.options.refreshable
     
     this.filterable = this.options.filterable
     
@@ -58,11 +60,9 @@
     constructor: DataTable,
     
     _init: function () {
-      this.$table.addClass('table table-striped table-bordered table-hover')
+      this.$table.addClass('table table-striped table-bordered table-hover data-table')
         .css('table-layout', 'fixed')
   
-      this.$tbody.css('cursor', 'pointer')
-      
       if (this.$caption.length < 1) {
         this.$caption = $('<caption></caption>')
         this.$table.prepend(this.$caption)
@@ -87,14 +87,20 @@
     
     rendCaption: function () {
       var $btnGroup = $('<div class="btn-group pull-right"></div>')
-      $btnGroup.append(`
-            <button class="btn btn-default btn-create" type="button" title="新增">
+      if (this.addible) {
+        $btnGroup.append(`
+            <button class="btn btn-default btn-add" type="button" title="新增">
                 <span class="glyphicon glyphicon-plus"></span>
             </button>
+        `)
+      }
+      if (this.refreshable) {
+        $btnGroup.append(`
             <button class="btn btn-default btn-refresh" type="button" title="刷新">
                 <span class="glyphicon glyphicon-refresh"></span>
             </button>
-        `);
+        `)
+      }
       if (this.filterable) {
         $btnGroup.append(`
           <button class="btn btn-default btn-filter" type="button" title="过滤器">
@@ -104,35 +110,44 @@
       }
       this.$caption.append($btnGroup)
       if (this.options.title) {
-        this.$caption.prepend('<span>' + this.options.title + '</span>')
+        this.$caption.prepend(this.options.title)
       }
     },
     
     renderHead: function () {
-      var $tr = $('<tr></tr>');
+      var $tr = $('<tr></tr>')
       for (var key in this.options.fields) {
-        $tr.append('<th>' + this.options.fields[key] + '</th>')
+        var $sortBtn = $('<div class="pull-right"></div>')
+          .append('<div class="btn-sort" data-sort-by=":sort-by" data-order="asc"><span class="glyphicon glyphicon-chevron-up"></span></div>'.replace(':sort-by', key))
+          .append('<div class="btn-sort" data-sort-by=":sort-by" data-order="desc"><span class="glyphicon glyphicon-chevron-down"></span></div>'.replace(':sort-by', key))
+        $tr.append($('<th>' + this.options.fields[key] + '</th>').append($sortBtn))
       }
       this.$thead.append($tr)
+      var table = this
+      this.$thead.find('.btn-sort').click(function () {
+        var $this   = $(this),
+            sortBy  = $this.data('sort-by'),
+            order   = $this.data('order')
+        sort(table.visibleData, sortBy, order == 'desc')
+        table.renderData()
+      })
       
       if (this.filterable) {
         var $filter = $('<tr class="data-table-filter" style="display: none;"></tr>')
         for (var key in this.options.fields) {
-          $filter.append('<th><input class="form-control" name="#name"></th>'.replace('#name', key))
+          $filter.append('<th><input class="form-control" name=":name"></th>'.replace(':name', key))
         }
         this.$thead.append($filter)
         this.$caption.find('.btn-filter').click(function () {
           $(this).toggleClass('active')
           $filter.toggle()
+          $filter.find(':input').val('').change()
         })
         this.$table.on('change keyup paste', '.data-table-filter :input', function () {
           var filterConditions = {}
           this.$table.find('.data-table-filter :input').each(function() {
             var name = $(this).attr('name')
             var value = $(this).val()
-            if (name == 'maxFileSize') {
-              value *= 1024 * 1024
-            }
             if ($(this).data('strict')) {
               fillValue(filterConditions, name + '-strict', true)
             }
@@ -149,30 +164,51 @@
       for (var i in this.visibleData) {
         var $tr = $('<tr></tr>')
         for (var key in this.options.fields) {
-          $tr.append('<td>' + this.visibleData[i][key] + '</td>')
+          $tr.append('<td>' + getValue(this.visibleData[i], key) + '</td>')
         }
         this.$tbody.append($tr)
       }
     }
   }
   
+  /**
+   * 排序
+   * @param array     数组
+   * @param sortBy    Object排序依据的属性，为空以对象本身
+   * @param desc      倒序（true/false）
+   */
+  var sort = function (array, sortBy, desc) {
+    array.sort(function (a, b) {
+      return compare(a, b, sortBy)
+    })
+    if (desc) {
+      array.reverse()
+    }
+  }
+  
   var compare = function (v1, v2, field) {
     if (field) {
-      v1 = v1[field]
-      v2 = v2[field]
+      v1 = getValue(v1, field)
+      v2 = getValue(v2, field)
     }
     if (/^\d+$/.test(v1) && /^\d+$/.test(v2)) {
       v1 = Number(v1)
       v2 = Number(v2)
     }
-    if (v1 > v2 || v2 == undefined) {
+    if (v1 > v2 || !v2) {
       return 1
-    } else if (v1 < v2 || v1 == undefined) {
+    } else if (v1 < v2 || !v1) {
       return -1
     }
     return v1.id > v2.id ? 1 : -1
   }
   
+  /**
+   * 数据过滤
+   * @param array       原数组
+   * @param conditions  过滤条件
+   * @returns {Array}   过滤结果数组
+   */
   var filtrate = function (array, conditions) {
     var newArray = []
     array.forEach(function (val) {
@@ -197,15 +233,19 @@
     return false
   }
   
+  /**
+   * 空判断
+   */
   var isEmpty = function (o) {
     return o == undefined || o == ''
   }
   
   /**
-   * 給對象賦值 當name爲a.b則代表對targetObj.a.b賦值
-   * @param targetObj 目標對象
-   * @param name 下標，子對象屬性以‘parentObj.childObj.property’
-   * @param value 值
+   * 给对象赋值 当name为a.b则表示对targetObj.a.b赋值
+   * @param targetObj 目标对象
+   * @param name      下标，子对象属性以‘parentObj.childObj.property’
+   * @param value     值
+   * @param type      特殊类型['list']
    */
   var fillValue = function (targetObj, name, value, type) {
     if (!isEmpty(targetObj) && !isEmpty(name) && !isEmpty(value)) {
@@ -217,7 +257,7 @@
     var dotIdx = name.indexOf('.')
     if (dotIdx == -1) {
       if (type == 'list') {
-        ref[name] = ref[name] ? ref[name] : []
+        ref[name] = ref[name] || []
         ref[name].push(value)
       } else {
         ref[name] = value
@@ -229,6 +269,27 @@
       ref[tmpName] = {}
     }
     recursionFill(ref[tmpName], name.substr(dotIdx + 1), value, type)
+  }
+  
+  /**
+   * 取对象属性值 当name为a.b则表示取targetObj.a.b的值
+   * @param targetObj 目标对象
+   * @param name      下标，子对象属性以‘parentObj.childObj.property’
+   */
+  var getValue = function (targetObj, name) {
+    return (isEmpty(targetObj) || isEmpty(name)) ? undefined : recursionDrain(targetObj, name)
+  }
+  
+  var recursionDrain = function (ref, name) {
+    var dotIdx = name.indexOf('.')
+    if (dotIdx == -1) {
+      return ref[name]
+    }
+    var tmpName = name.substr(0, dotIdx)
+    if (isEmpty(ref[tmpName])) {
+      ref[tmpName] = {}
+    }
+    return recursionDrain(ref[tmpName], name.substr(dotIdx + 1))
   }
   
 })(jQuery)
