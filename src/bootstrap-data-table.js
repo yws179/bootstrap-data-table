@@ -2,13 +2,14 @@
  * Plugin:  bootstrap-data-table
  * Author:  Weisen Yan (严伟森)
  * Github:  https://github.com/yws179/bootstrap-data-table
- * Version: 0.0.2
+ * Version: 0.0.3
  * Licensed under the MIT license
  */
 
 (function ($) {
   
   $.fn.dataTable = function (option) {
+    var args = arguments
     return this.each(function () {
       var $this = $(this),
         dataTable = $this.data('dataTable'),
@@ -19,7 +20,9 @@
         $this.data('dataTable', dataTable)
       }
       
-      if ('string' === typeof option) {}
+      if ('string' === typeof option) {
+        dataTable[option].apply(dataTable, Array.prototype.slice.call(args, 1))
+      }
     })
   }
   
@@ -43,14 +46,14 @@
     
     this.visibleData = this.data
     
+    this.visibleCondition = {}
+    
     this.addible = this.options.addible
     
     this.refreshable = this.options.refreshable
     
     this.filterable = this.options.filterable
     
-    this.sortedField = undefined
-  
     this._init()
     
   }
@@ -87,6 +90,7 @@
     
     rendCaption: function () {
       var $btnGroup = $('<div class="btn-group pull-right"></div>')
+      
       if (this.addible) {
         $btnGroup.append(`
             <button class="btn btn-default btn-add" type="button" title="新增">
@@ -94,6 +98,7 @@
             </button>
         `)
       }
+      
       if (this.refreshable) {
         $btnGroup.append(`
             <button class="btn btn-default btn-refresh" type="button" title="刷新">
@@ -101,6 +106,7 @@
             </button>
         `)
       }
+      
       if (this.filterable) {
         $btnGroup.append(`
           <button class="btn btn-default btn-filter" type="button" title="过滤器">
@@ -108,6 +114,7 @@
           </button>
         `)
       }
+      
       this.$caption.append($btnGroup)
       if (this.options.title) {
         this.$caption.prepend(this.options.title)
@@ -128,7 +135,7 @@
         var $this   = $(this),
             sortBy  = $this.data('sort-by'),
             order   = $this.data('order')
-        sort(table.visibleData, sortBy, order == 'desc')
+        sort(table.data, sortBy, order == 'desc')
         table.renderData()
       })
       
@@ -138,11 +145,14 @@
           $filter.append('<th><input class="form-control" name=":name"></th>'.replace(':name', key))
         }
         this.$thead.append($filter)
+        
         this.$caption.find('.btn-filter').click(function () {
           $(this).toggleClass('active')
           $filter.toggle()
-          $filter.find(':input').val('').change()
+          $filter.find(':input').val('')
+          $filter.find(':input:first()').change()
         })
+        
         this.$table.on('change keyup paste', '.data-table-filter :input', function () {
           var filterConditions = {}
           this.$table.find('.data-table-filter :input').each(function() {
@@ -153,13 +163,15 @@
             }
             fillValue(filterConditions, name, value)
           })
-          this.renderData(filtrate(this.data, filterConditions))
+          this.visibleCondition = filterConditions
+          this.renderData()
         }.bind(this))
       }
     },
     
     renderData: function (data) {
-      this.visibleData = data || this.visibleData
+      this.visibleData = data || this.data
+      this.visibleData = filtrate(data || this.data, this.visibleCondition)
       this.$tbody.html('')
       for (var i in this.visibleData) {
         var $tr = $('<tr></tr>')
@@ -168,6 +180,31 @@
         }
         this.$tbody.append($tr)
       }
+    },
+    
+    getData: function (idx) {
+      return this.data[idx]
+    },
+    
+    addData: function (data) {
+      if (data instanceof Array) {
+        data.forEach(function (value) {
+          this.data.push(value)
+        }.bind(this))
+      } else {
+        this.data.push(data)
+      }
+    },
+    
+    removeData: function (idx) {
+      if (idx instanceof Array) {
+        idx.forEach(function (value) {
+          this.data.splice(value, 1)
+        }.bind(this))
+      } else {
+        this.data.splice(idx, 1)
+      }
+      this.renderData()
     }
   }
   
