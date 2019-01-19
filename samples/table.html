@@ -18,7 +18,6 @@
     $('#tb-sample').dataTable({
       title: '用户',
       addible: true,
-      refreshable: true,
       filterable: true,
       fields: {
         id: '序号',
@@ -29,7 +28,7 @@
       },
       data: [
         {
-          id: '1',
+          id: 1,
           name: 'name',
           age: '18',
           gender: 'male',
@@ -38,7 +37,7 @@
           }
         },
         {
-          id: '2',
+          id: 2,
           name: 'name2',
           age: '19',
           gender: 'female',
@@ -48,6 +47,14 @@
         }
       ]
     })
-    // $('#tb-sample').dataTable().
+    $('#tb-sample').dataTable('addData', [{id: 3, name: 'new'}, {id: 4}])
+
+    /**
+     * 添加点击监听
+     * @param data 点击列所对应的数据项
+     */
+    $('#tb-sample').dataTable('click', function (data) {
+        alert(JSON.stringify(data))
+    })
 </script>
 </html>

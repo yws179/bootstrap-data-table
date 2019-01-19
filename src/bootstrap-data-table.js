@@ -176,7 +176,7 @@
       for (var i in this.visibleData) {
         var $tr = $('<tr></tr>')
         for (var key in this.options.fields) {
-          $tr.append('<td>' + getValue(this.visibleData[i], key) + '</td>')
+          $tr.append('<td>' + (getValue(this.visibleData[i], key) || '') + '</td>')
         }
         this.$tbody.append($tr)
       }
@@ -194,6 +194,7 @@
       } else {
         this.data.push(data)
       }
+      this.renderData()
     },
     
     removeData: function (idx) {
@@ -205,6 +206,13 @@
         this.data.splice(idx, 1)
       }
       this.renderData()
+    },
+    
+    click: function (fn) {
+      var table = this
+      this.$tbody.on('click', 'tr', function () {
+        fn.apply(this, [table.visibleData[$(this).index()]])
+      })
     }
   }
   
