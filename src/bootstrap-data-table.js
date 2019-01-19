@@ -208,9 +208,9 @@
       this.renderData()
     },
     
-    click: function (fn) {
+    event: function (type, fn) {
       var table = this
-      this.$tbody.on('click', 'tr', function () {
+      this.$tbody.on(type, 'tr', function () {
         fn.apply(this, [table.visibleData[$(this).index()]])
       })
     }

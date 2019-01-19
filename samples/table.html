@@ -53,8 +53,14 @@
      * 添加点击监听
      * @param data 点击列所对应的数据项
      */
-    $('#tb-sample').dataTable('click', function (data) {
-        alert(JSON.stringify(data))
+    $('#tb-sample').dataTable('event', 'click', function (data) {
+        alert("单击， 数据：" + JSON.stringify(data))
+    })
+
+    $('#tb-sample').dataTable('event', 'mouseenter', function () {
+      $(this).css('background', 'yellow')
+    }).dataTable('event', 'mouseleave', function () {
+      $(this).css('background', 'white')
     })
 </script>
 </html>
