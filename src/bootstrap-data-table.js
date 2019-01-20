@@ -180,7 +180,8 @@
     renderData: function (data) {
       this.data = data || this.data
       this.visibleData = filtrate(data || this.data, this.visibleCondition)
-      if (this.pageable) {
+      var totalPage = Math.ceil(this.visibleData.length / this.pageSize)
+        if (this.pageable) {
         this.visibleData = Array.prototype.slice.call(this.visibleData, (this.page - 1) * this.pageSize,
           Math.min(this.page * this.pageSize, this.visibleData.length))
       }
@@ -193,13 +194,12 @@
         this.$tbody.append($tr)
       }
       if (this.pageable) {
-        this.renderPagination()
+        this.renderPagination(totalPage)
       }
     },
     
-    renderPagination: function () {
-      var totalPage = Math.ceil(this.data.length / this.pageSize),
-        nums = pageGenerator(this.page, totalPage),
+    renderPagination: function (totalPage) {
+      var nums = pageGenerator(this.page, totalPage),
         $pagination = $('<ul class="pagination data-table-pagination"></ul>')
   
       var $laquo = $('<li data-page="1"><a href="javascript:void(0);">&laquo;</a></li>')
