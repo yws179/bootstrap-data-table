@@ -1,8 +1,9 @@
 /*
  * Plugin:  bootstrap-data-table
  * Author:  Weisen Yan (严伟森)
+ * Version: 0.0.4
+ * Email:   yws179@gmail.com
  * Github:  https://github.com/yws179/bootstrap-data-table
- * Version: 0.0.3
  * Licensed under the MIT license
  */
 
@@ -40,6 +41,8 @@
     
     this.$tbody = this.$table.find('tbody')
     
+    this.$pagination = this.$table.siblings('.pagination')
+    
     this.options = options || {}
     
     this.data = this.options.data || []
@@ -54,6 +57,12 @@
     
     this.filterable = this.options.filterable
     
+    this.pageable = this.options.pageable
+    
+    this.pageSize = this.options.pageSize || 10
+    
+    this.page = this.options.page || 1
+    
     this._init()
     
   }
@@ -64,7 +73,6 @@
     
     _init: function () {
       this.$table.addClass('table table-striped table-bordered table-hover data-table')
-        .css('table-layout', 'fixed')
   
       if (this.$caption.length < 1) {
         this.$caption = $('<caption></caption>')
@@ -170,9 +178,13 @@
     },
     
     renderData: function (data) {
-      this.visibleData = data || this.data
+      this.data = data || this.data
       this.visibleData = filtrate(data || this.data, this.visibleCondition)
-      this.$tbody.html('')
+      if (this.pageable) {
+        this.visibleData = Array.prototype.slice.call(this.visibleData, (this.page - 1) * this.pageSize,
+          Math.min(this.page * this.pageSize, this.visibleData.length))
+      }
+      this.$tbody.html('');
       for (var i in this.visibleData) {
         var $tr = $('<tr></tr>')
         for (var key in this.options.fields) {
@@ -180,6 +192,50 @@
         }
         this.$tbody.append($tr)
       }
+      if (this.pageable) {
+        this.renderPagination()
+      }
+    },
+    
+    renderPagination: function () {
+      var totalPage = Math.ceil(this.data.length / this.pageSize),
+        nums = pageGenerator(this.page, totalPage),
+        $pagination = $('<ul class="pagination data-table-pagination"></ul>')
+  
+      var $laquo = $('<li data-page="1"><a href="javascript:void(0);">&laquo;</a></li>')
+      if (this.page == 1) {
+        $laquo.addClass('disabled')
+      }
+      $pagination.append($laquo)
+      
+      for (var i in nums) {
+        var $pn = $('<li data-page=":num"><a href="javascript:void(0);">:num</a></li>'.replace(/:num/g, nums[i]))
+        if (nums[i] == this.page) {
+          $pn.addClass('active')
+        }
+        $pagination.append($pn);
+      }
+      
+      var $requo = $('<li data-page=":totalPage"><a href="javascript:void(0);">&raquo;</a></li>'.replace(':totalPage', totalPage))
+      if (this.page == totalPage) {
+        $requo.addClass('disabled')
+      }
+      $pagination.append($requo)
+      
+      if (this.$pagination.length > 0) {
+        this.$pagination.replaceWith($pagination)
+        this.$pagination = $pagination
+      } else {
+        this.$pagination = $pagination
+        this.$table.after(this.$pagination)
+      }
+  
+      var table = this
+      $pagination.on('click', 'li', function () {
+        if ($(this).is('.disabled')) return
+        table.page = $(this).data('page')
+        table.renderData()
+      })
     },
     
     getData: function (idx) {
@@ -276,6 +332,35 @@
       }
     }
     return false
+  }
+  
+  /**
+   * 页码生成器
+   * @param currentPage 當前頁碼
+   * @param totalPages 總頁數
+   * @returns {Array} 頁碼數組
+   */
+  function pageGenerator(currentPage, totalPages) {
+    var nums = [],
+      count = 5,
+      startNum = 1
+    if (totalPages < 1) {
+      nums.push(1)
+      return nums
+    }
+    if (totalPages <= count) {
+      for (var i = 1; i <= totalPages; i++) {
+        nums.push(i)
+      }
+      return nums
+    }
+    startNum = currentPage - Math.floor(count / 2)
+    startNum = startNum > 0 ? startNum : 1
+    startNum = startNum + count > totalPages ? totalPages - count + 1 : startNum
+    for (var i = 0; i < count; i++) {
+      nums.push(startNum + i)
+    }
+    return nums
   }
   
   /**

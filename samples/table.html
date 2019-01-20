@@ -19,6 +19,8 @@
       title: '用户',
       addible: true,
       filterable: true,
+      pageable: true,
+      pageSize: 3,
       fields: {
         id: '序号',
         name: '姓名',
@@ -47,14 +49,74 @@
         }
       ]
     })
-    $('#tb-sample').dataTable('addData', [{id: 3, name: 'new'}, {id: 4}])
 
-    /**
-     * 添加点击监听
-     * @param data 点击列所对应的数据项
-     */
+    // 添加多个数据到数据集
+    $('#tb-sample').dataTable('addData', [{id: 3, name: 'three'}, {id: 4, name: 'four'}])
+    // 添加单个数据到数据集
+    $('#tb-sample').dataTable('addData', {id: 5, name: 'five'})
+
+    // 重新渲染整个列表，重置数据集
+    $('#tb-sample').dataTable('renderData', [
+      {
+        id: 1,
+        name: 'name',
+        age: '18',
+        gender: 'male',
+        bag: {
+          size: 100
+        }
+      },
+      {
+        id: 2,
+        name: 'name2',
+        age: '19',
+        gender: 'female',
+        bag: {
+          size: 100
+        }
+      },
+      {
+        id: 3,
+        name: 'name3',
+        age: '29',
+        gender: 'female',
+        bag: {
+          size: 100
+        }
+      },
+      {
+        id: 4,
+        name: 'name4',
+        age: '2',
+        gender: 'female',
+        bag: {
+          size: 100
+        }
+      },
+      {
+        id: 5,
+        name: 'name5',
+        age: '19',
+        gender: 'male',
+        bag: {
+          size: 100
+        }
+      },
+      {
+        id: 6,
+        name: 'name6',
+        age: '24',
+        gender: 'male',
+        bag: {
+          size: 100
+        }
+      }
+    ])
+
+
+    // 添加点击监听
     $('#tb-sample').dataTable('event', 'click', function (data) {
-        alert("单击， 数据：" + JSON.stringify(data))
+        alert("单击,点击列的数据：" + JSON.stringify(data))
     })
 
     $('#tb-sample').dataTable('event', 'mouseenter', function () {

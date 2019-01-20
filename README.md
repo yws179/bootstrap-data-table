@@ -8,6 +8,7 @@
 - 数据排序
 - 数据添加
 - 数据列事件监听
+- 分页
 
 # 基本演示
 
@@ -31,17 +32,17 @@
 
 ```javascript
 $('#tb-sample').dataTable({
-  title: '用户',			   // 标题
+  title: '用户',			    // 标题
   addible: true,			// 显示添加按钮
   filterable: true,			// 开启过滤筛选功能
-  fields: {					// 显示的字段，以及列名
+  fields: {				// 显示的字段，以及列名
     id: '序号',
     name: '姓名',
     age: '年龄',
     gender: '性别',
     'bag.size': '背包大小'
   },
-  data: [					//初始化数据
+  data: [				//初始化数据
     {
       id: 1,
       name: 'name',

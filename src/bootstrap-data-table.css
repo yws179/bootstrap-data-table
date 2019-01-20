@@ -1,3 +1,7 @@
+.data-table {
+    table-layout: fixed;
+}
+
 .data-table caption {
     padding-left: 10px;
     height: 50px;
@@ -5,7 +9,7 @@
     line-height: 34px;
 }
 
-.btn-sort {
+.data-table .btn-sort {
     margin: -2px;
     height: 50%;
     font-size: 10px;
@@ -14,14 +18,18 @@
     cursor: pointer;
 }
 
-th:hover .btn-sort {
+.data-table th:hover .btn-sort {
     display: block;
 }
 
-.btn-sort + .btn-sort {
+.data-table .btn-sort + .btn-sort {
     margin-top: -5px;
 }
 
-.btn-sort:hover {
+.data-table .btn-sort:hover {
     color: black;
+}
+
+.data-table-pagination {
+    margin-top: 0;
 }
