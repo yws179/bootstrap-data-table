@@ -9,6 +9,10 @@
     line-height: 34px;
 }
 
+.data-table .data-table-filter {
+    display: none;
+}
+
 .data-table .btn-sort {
     margin: -2px;
     height: 50%;

@@ -148,7 +148,7 @@
       })
       
       if (this.filterable) {
-        var $filter = $('<tr class="data-table-filter" style="display: none;"></tr>')
+        var $filter = $('<tr class="data-table-filter"></tr>')
         for (var key in this.options.fields) {
           $filter.append('<th><input class="form-control" name=":name"></th>'.replace(':name', key))
         }
