@@ -200,27 +200,41 @@
     
     renderPagination: function (totalPage) {
       var nums = pageGenerator(this.page, totalPage),
-        $pagination = $('<ul class="pagination data-table-pagination"></ul>')
+        $pagination = $('<div class="data-table-pagination"></div>'),
+        $pageSeleter = $('<select class="form-control data-table-page-select"></select>'),
+        $pageNums = $('<ul class="pagination data-table-pagination"></ul>')
+  
+      $pagination.prepend('<span>:page / :totalPage</span>'.replace(':page', this.page).replace(':totalPage', totalPage))
   
       var $laquo = $('<li data-page="1"><a href="javascript:void(0);">&laquo;</a></li>')
       if (this.page == 1) {
         $laquo.addClass('disabled')
       }
-      $pagination.append($laquo)
+      $pageNums.append($laquo)
       
       for (var i in nums) {
         var $pn = $('<li data-page=":num"><a href="javascript:void(0);">:num</a></li>'.replace(/:num/g, nums[i]))
         if (nums[i] == this.page) {
           $pn.addClass('active')
         }
-        $pagination.append($pn);
+        $pageNums.append($pn);
       }
       
       var $requo = $('<li data-page=":totalPage"><a href="javascript:void(0);">&raquo;</a></li>'.replace(':totalPage', totalPage))
       if (this.page == totalPage) {
         $requo.addClass('disabled')
       }
-      $pagination.append($requo)
+      $pageNums.append($requo)
+      $pagination.append($pageNums)
+  
+      for (var i = 1; i <= totalPage; i++) {
+        var $pageOption = $('<option value=":page">:page</option>'.replace(/:page/g, i))
+        if (i == this.page) {
+          $pageOption.prop('selected', true)
+        }
+        $pageSeleter.append($pageOption);
+      }
+      $pagination.append($pageSeleter)
       
       if (this.$pagination.length > 0) {
         this.$pagination.replaceWith($pagination)
@@ -231,9 +245,14 @@
       }
   
       var table = this
-      $pagination.on('click', 'li', function () {
+      $pagination.on('click change', '.pagination li, .data-table-page-select', function () {
+        console.log(this)
         if ($(this).is('.disabled')) return
-        table.page = $(this).data('page')
+        if ($(this).is('select')) {
+          table.page = $(this).val()
+        } else {
+          table.page = $(this).data('page')
+        }
         table.renderData()
       })
     },

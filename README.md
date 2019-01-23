@@ -1,5 +1,7 @@
 # Bootstrap Data Table
 
+[![](https://img.shields.io/github/license/yws179/bootstrap-data-table.svg)](https://github.com/yws179/bootstrap-data-table/blob/master/LICENSE)
+
 业余时间忙里抽空实现中....
 
 # 已完成功能
@@ -35,6 +37,7 @@ $('#tb-sample').dataTable({
   title: '用户',			    // 标题
   addible: true,			// 显示添加按钮
   filterable: true,			// 开启过滤筛选功能
+  pageable: true,			// 开启分页功能
   fields: {				// 显示的字段，以及列名
     id: '序号',
     name: '姓名',
@@ -65,12 +68,19 @@ $('#tb-sample').dataTable({
 })
 ```
 
-![](./screenshot/base_table.gif)
+![](./screenshot/table.gif)
 
 ### 添加数据
 
 ```javascript
+// 添加多个数据到数据集
 $('#tb-sample').dataTable('addData', [{id: 3, name: 'new'}, {id: 4}])
+
+// 添加单个数据到数据集
+$('#tb-sample').dataTable('addData', {id: 5, name: 'five'})
+
+// 重新渲染整个列表，重置数据集
+$('#tb-sample').dataTable('renderData', [....])
 ```
 
 ### 事件监听

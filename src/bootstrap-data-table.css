@@ -31,5 +31,25 @@
 }
 
 .data-table-pagination {
+    overflow: hidden;
+}
+
+.data-table-pagination span {
+    float: left;
+    height: 34px;
+    line-height: 34px;
+}
+
+.data-table-pagination .data-table-page-select {
+    width: 100px;
+    float: right;
+}
+
+.data-table-pagination .data-table-page-select option {
+    cursor: pointer;
+}
+
+.data-table-pagination .pagination {
     margin-top: 0;
+    float: right;
 }
