@@ -5,15 +5,15 @@ Bootstrap DataTable 是一个可以简单快速创建一个功能齐全的数据
 [![](https://img.shields.io/github/license/yws179/bootstrap-data-table.svg)](https://github.com/yws179/bootstrap-data-table/blob/master/LICENSE)
 
 # 已完成功能
-- 基本数据渲染
-- 数据过滤
-- 数据排序
-- 数据添加
-- 数据删除
-- 数据替换
-- 数据获取
-- 数据列事件监听
-- 分页
+- [x] 基本数据渲染
+- [x] 数据过滤
+- [x] 数据排序
+- [x] 数据添加
+- [x] 数据删除
+- [x] 数据替换
+- [x] 数据获取
+- [x] 数据列事件监听
+- [x] 分页
 
 # 基本演示
 
@@ -38,7 +38,6 @@ Bootstrap DataTable 是一个可以简单快速创建一个功能齐全的数据
 ```javascript
 $('#tb-sample').dataTable({
   title: '用户',			    	// 标题
-  addible: true,			// 显示添加按钮
   filterable: true,			// 开启过滤筛选功能
   pageable: true,			// 开启分页功能
   pageSize: 3,				// 单页显示数据个数，默认10
@@ -50,6 +49,16 @@ $('#tb-sample').dataTable({
     gender: '性别',
     'bag.size': '背包大小'
   },
+  buttons: [				//添加自定义按钮
+    {
+      dom: '<button class="btn btn-default btn-add" type="button" title="新增"><span class="glyphicon glyphicon-plus"></span></button>',
+      events: {				//设置按钮事件
+        click: function () {
+          $('#modal-add').modal('show')
+        }
+      }
+    }
+  ],
   data: [				//初始化数据
     {
       id: 1,

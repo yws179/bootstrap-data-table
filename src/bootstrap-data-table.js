@@ -51,7 +51,7 @@
     
     this.visibleCondition = {}
     
-    this.addible = this.options.addible
+    this.buttons = this.options.buttons || []
     
     this.refreshable = this.options.refreshable
     
@@ -99,12 +99,13 @@
     rendCaption: function () {
       var $btnGroup = $('<div class="btn-group pull-right"></div>')
       
-      if (this.addible) {
-        $btnGroup.append(`
-            <button class="btn btn-default btn-add" type="button" title="新增">
-                <span class="glyphicon glyphicon-plus"></span>
-            </button>
-        `)
+      for (var i in this.buttons) {
+        var button = this.buttons[i],
+          $btn = $(button.dom)
+        for (var event in button.events) {
+          $btn.on(event, button.events[event])
+        }
+        $btnGroup.append($btn)
       }
       
       if (this.refreshable) {
