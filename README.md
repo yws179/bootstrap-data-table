@@ -12,7 +12,9 @@ Bootstrap DataTable 是一个可以简单快速创建一个功能齐全的数据
 - [x] 数据删除
 - [x] 数据替换
 - [x] 数据获取
+- [x] 数据刷新
 - [x] 数据列事件监听
+- [x] 自定义按钮组
 - [x] 分页
 
 # 基本演示
@@ -39,6 +41,7 @@ Bootstrap DataTable 是一个可以简单快速创建一个功能齐全的数据
 $('#tb-sample').dataTable({
   title: '用户',			    	// 标题
   filterable: true,			// 开启过滤筛选功能
+  refreshable: true,		// 开启刷新功能
   pageable: true,			// 开启分页功能
   pageSize: 3,				// 单页显示数据个数，默认10
   page: 1,				// 当前页，默认1

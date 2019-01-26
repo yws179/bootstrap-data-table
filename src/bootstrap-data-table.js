@@ -109,19 +109,17 @@
       }
       
       if (this.refreshable) {
-        $btnGroup.append(`
-            <button class="btn btn-default btn-refresh" type="button" title="刷新">
-                <span class="glyphicon glyphicon-refresh"></span>
-            </button>
-        `)
+        var $btn = $('<button class="btn btn-default btn-refresh" type="button" title="刷新"><span class="glyphicon glyphicon-refresh"></span></button>')
+        $btn.on('click', function () {
+          var $filter = this.$thead.find('tr.data-table-filter')
+          $filter.find(':input').val('')
+          $filter.find(':input:first()').change()
+        }.bind(this))
+        $btnGroup.append($btn)
       }
       
       if (this.filterable) {
-        $btnGroup.append(`
-          <button class="btn btn-default btn-filter" type="button" title="过滤器">
-                <span class="glyphicon glyphicon-filter"></span>
-          </button>
-        `)
+        $btnGroup.append('<button class="btn btn-default btn-filter" type="button" title="过滤器"><span class="glyphicon glyphicon-filter"></span></button>')
       }
       
       this.$caption.append($btnGroup)

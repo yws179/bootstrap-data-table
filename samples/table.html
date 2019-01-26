@@ -37,6 +37,7 @@
     $('#tb-sample').dataTable({
       title: '用户',
       filterable: true,
+      refreshable: true,
       pageable: true,
       pageSize: 2,
       fields: {
@@ -46,16 +47,16 @@
         gender: '性别',
         'bag.size': '背包大小'
       },
-  buttons: [
-    {
-      dom: '<button class="btn btn-default btn-add" type="button" title="新增"><span class="glyphicon glyphicon-plus"></span></button>',
-      events: {
-        click: function () {
-          $('#modal-add').modal('show')
+      buttons: [
+        {
+          dom: '<button class="btn btn-default btn-add" type="button" title="新增"><span class="glyphicon glyphicon-plus"></span></button>',
+          events: {
+            click: function () {
+              $('#modal-add').modal('show')
+            }
+          }
         }
-      }
-    }
-  ],
+      ],
       data: [
         {
           id: 1,
