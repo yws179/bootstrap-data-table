@@ -248,7 +248,6 @@
   
       var table = this
       $pagination.on('click change', '.pagination li, .data-table-page-select', function () {
-        console.log(this)
         if ($(this).is('.disabled')) return
         if ($(this).is('select')) {
           table.page = $(this).val()
