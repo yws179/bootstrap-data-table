@@ -2,9 +2,10 @@
 
 Bootstrap DataTable 是一个可以简单快速创建一个功能齐全的数据表格的Jquery插件
 
+[![](https://img.shields.io/github/release/yws179/bootstrap-data-table.svg)](https://github.com/yws179/bootstrap-data-table/releases)
 [![](https://img.shields.io/github/license/yws179/bootstrap-data-table.svg)](https://github.com/yws179/bootstrap-data-table/blob/master/LICENSE)
 
-# 已完成功能
+## 功能
 - [x] 基本数据渲染
 - [x] 数据过滤
 - [x] 数据排序
@@ -17,7 +18,7 @@ Bootstrap DataTable 是一个可以简单快速创建一个功能齐全的数据
 - [x] 自定义按钮组
 - [x] 分页
 
-# 基本演示
+## 基本演示
 
 导入相关js/css后，html只需要写以下这一句即可
 
@@ -39,9 +40,9 @@ Bootstrap DataTable 是一个可以简单快速创建一个功能齐全的数据
 
 ```javascript
 $('#tb-sample').dataTable({
-  title: '用户',			    	// 标题
+  title: '用户',				// 标题
   filterable: true,			// 开启过滤筛选功能
-  refreshable: true,		// 开启刷新功能
+  refreshable: true,			// 开启刷新功能
   pageable: true,			// 开启分页功能
   pageSize: 3,				// 单页显示数据个数，默认10
   page: 1,				// 当前页，默认1
@@ -57,7 +58,7 @@ $('#tb-sample').dataTable({
       dom: '<button class="btn btn-default btn-add" type="button" title="新增"><span class="glyphicon glyphicon-plus"></span></button>',
       events: {				//设置按钮事件
         click: function () {
-          $('#modal-add').modal('show')
+          //...
         }
       }
     }

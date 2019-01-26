@@ -1,3 +1,12 @@
+/*
+ * Plugin:  bootstrap-data-table
+ * Author:  Weisen Yan (严伟森)
+ * Version: 0.1.0
+ * Email:   yws179@gmail.com
+ * Github:  https://github.com/yws179/bootstrap-data-table
+ * Licensed under the MIT license
+ */
+
 .data-table {
     table-layout: fixed;
 }
