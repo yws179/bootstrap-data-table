@@ -1,7 +1,7 @@
 /*
  * Plugin:  bootstrap-data-table
  * Author:  Weisen Yan (严伟森)
- * Version: 0.0.5
+ * Version: 0.1.0
  * Email:   yws179@gmail.com
  * Github:  https://github.com/yws179/bootstrap-data-table
  * Licensed under the MIT license
@@ -210,7 +210,7 @@
       $pagination.prepend('<span>:page / :totalPage</span>'.replace(':page', this.page).replace(':totalPage', totalPage))
   
       var $laquo = $('<li data-page="1"><a href="javascript:void(0);">&laquo;</a></li>')
-      if (this.page == 1) {
+      if (this.page <= 1) {
         $laquo.addClass('disabled')
       }
       $pageNums.append($laquo)
@@ -260,6 +260,10 @@
       })
     },
     
+    getIdx: function (data, fn) {
+      fn.apply(this, this.data.indexOf(data))
+    },
+    
     getData: function (idx, fn) {
       var data = []
       if (idx instanceof Array) {
@@ -270,6 +274,10 @@
       } else {
         fn.apply(this, [this.data[idx]])
       }
+    },
+    
+    getAllData: function (fn) {
+      fn.apply(this, this.data)
     },
     
     addData: function (data) {

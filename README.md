@@ -1,14 +1,17 @@
 # Bootstrap Data Table
 
-[![](https://img.shields.io/github/license/yws179/bootstrap-data-table.svg)](https://github.com/yws179/bootstrap-data-table/blob/master/LICENSE)
+Bootstrap DataTable 是一个可以简单快速创建一个功能齐全的数据表格的Jquery插件
 
-业余时间忙里抽空实现中....
+[![](https://img.shields.io/github/license/yws179/bootstrap-data-table.svg)](https://github.com/yws179/bootstrap-data-table/blob/master/LICENSE)
 
 # 已完成功能
 - 基本数据渲染
 - 数据过滤
 - 数据排序
 - 数据添加
+- 数据删除
+- 数据替换
+- 数据获取
 - 数据列事件监听
 - 分页
 
@@ -34,10 +37,12 @@
 
 ```javascript
 $('#tb-sample').dataTable({
-  title: '用户',			    // 标题
+  title: '用户',			    	// 标题
   addible: true,			// 显示添加按钮
   filterable: true,			// 开启过滤筛选功能
   pageable: true,			// 开启分页功能
+  pageSize: 3,				// 单页显示数据个数，默认10
+  page: 1,				// 当前页，默认1
   fields: {				// 显示的字段，以及列名
     id: '序号',
     name: '姓名',
@@ -64,23 +69,58 @@ $('#tb-sample').dataTable({
         size: 100
       }
     }
+    //...
   ]
 })
 ```
 
 ![](./screenshot/table.gif)
 
-### 添加数据
+### 数据操作
 
 ```javascript
+// 重新渲染整个列表，重置数据集
+$('#tb-sample').dataTable('renderData', [....])
+
 // 添加多个数据到数据集
 $('#tb-sample').dataTable('addData', [{id: 3, name: 'new'}, {id: 4}])
 
 // 添加单个数据到数据集
 $('#tb-sample').dataTable('addData', {id: 5, name: 'five'})
 
-// 重新渲染整个列表，重置数据集
-$('#tb-sample').dataTable('renderData', [....])
+//idx为dataTable中的索引
+var idx = 3
+var idxs = [2, 3, 5]
+
+//根据数据获取idx
+$('#tb-sample').dataTable('getIdx', data, function(idx) {
+  alert(idx)
+})
+
+//移除单个数据
+$('#tb-sample').dataTable('removeData', idx)
+
+//移除多个数据
+$('#tb-sample').dataTable('removeData', idxs)
+
+//替换数据
+$('#tb-sample').dataTable('replaceData', idx, {id: 1000, name: 'replaceData'})
+
+//通过idx获取数据
+$('#tb-sample').dataTable('getData', idx, function(data) {
+  alert(JSON.stringify(data))
+})
+
+//通过idx数组获取数据集
+$('#tb-sample').dataTable('getData', idxs, function(data) {
+  alert(JSON.stringify(data))
+})
+
+//获取所有数据
+$('#tb-sample').dataTable('getAllData', function(data) {
+  alert(JSON.stringify(data))
+})
+
 ```
 
 ### 事件监听
@@ -88,9 +128,10 @@ $('#tb-sample').dataTable('renderData', [....])
 ```javascript
 /**
  * 添加点击监听
- * @param data 点击列所对应的数据项
+ * @param idx   dataTable中数据唯一标识
+ * @param data  点击列所对应的数据项
  */
-$('#tb-sample').dataTable('event', 'click', function (data) {
+$('#tb-sample').dataTable('event', 'click', function (idx, data) {
     alert("单击， 数据：" + JSON.stringify(data))
 })
 
