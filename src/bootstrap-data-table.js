@@ -1,7 +1,7 @@
 /*
  * Plugin:  bootstrap-data-table
  * Author:  Weisen Yan (严伟森)
- * Version: 0.0.4
+ * Version: 0.0.5
  * Email:   yws179@gmail.com
  * Github:  https://github.com/yws179/bootstrap-data-table
  * Licensed under the MIT license
@@ -181,9 +181,12 @@
       this.data = data || this.data
       this.visibleData = filtrate(data || this.data, this.visibleCondition)
       var totalPage = Math.ceil(this.visibleData.length / this.pageSize)
-        if (this.pageable) {
+      if (this.pageable) {
+        if (this.page > totalPage) {
+          this.page = totalPage
+        }
         this.visibleData = Array.prototype.slice.call(this.visibleData, (this.page - 1) * this.pageSize,
-          Math.min(this.page * this.pageSize, this.visibleData.length))
+          Math.min(this.page * this.pageSize, this.visibleData.length));
       }
       this.$tbody.html('');
       for (var i in this.visibleData) {
@@ -257,8 +260,16 @@
       })
     },
     
-    getData: function (idx) {
-      return this.data[idx]
+    getData: function (idx, fn) {
+      var data = []
+      if (idx instanceof Array) {
+        idx.forEach(function (value) {
+          data.push(this.data[value])
+        }.bind(this))
+        fn.apply(this, [data])
+      } else {
+        fn.apply(this, [this.data[idx]])
+      }
     },
     
     addData: function (data) {
@@ -283,10 +294,16 @@
       this.renderData()
     },
     
+    replaceData: function (idx, data) {
+      this.data.splice(idx, 1, data)
+      this.renderData()
+    },
+    
     event: function (type, fn) {
       var table = this
       this.$tbody.on(type, 'tr', function () {
-        fn.apply(this, [table.visibleData[$(this).index()]])
+        var data = table.visibleData[$(this).index()]
+        fn.apply(this, [table.data.indexOf(data), data])
       })
     }
   }
@@ -355,9 +372,9 @@
   
   /**
    * 页码生成器
-   * @param currentPage 當前頁碼
-   * @param totalPages 總頁數
-   * @returns {Array} 頁碼數組
+   * @param currentPage 当前页码
+   * @param totalPages 总页数
+   * @returns {Array} 页码数组
    */
   function pageGenerator(currentPage, totalPages) {
     var nums = [],

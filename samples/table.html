@@ -20,7 +20,7 @@
       addible: true,
       filterable: true,
       pageable: true,
-      pageSize: 3,
+      pageSize: 2,
       fields: {
         id: '序号',
         name: '姓名',
@@ -115,8 +115,8 @@
 
 
     // 添加点击监听
-    $('#tb-sample').dataTable('event', 'click', function (data) {
-        alert("单击,点击列的数据：" + JSON.stringify(data))
+    $('#tb-sample').dataTable('event', 'click', function (idx, data) {
+        alert("单击" + idx + ",点击列的数据：" + JSON.stringify(data))
     })
 
     $('#tb-sample').dataTable('event', 'mouseenter', function () {
