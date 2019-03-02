@@ -1,7 +1,7 @@
 /*
  * Plugin:  bootstrap-data-table
  * Author:  Weisen Yan (严伟森)
- * Version: 0.1.0
+ * Version: 0.1.1
  * Email:   yws179@gmail.com
  * Github:  https://github.com/yws179/bootstrap-data-table
  * Licensed under the MIT license
@@ -56,7 +56,9 @@
     this.refreshable = this.options.refreshable
     
     this.filterable = this.options.filterable
-    
+
+    this.operate = this.options.operate
+
     this.pageable = this.options.pageable
     
     this.pageSize = this.options.pageSize || 10
@@ -136,7 +138,10 @@
           .append('<div class="btn-sort" data-sort-by=":sort-by" data-order="desc"><span class="glyphicon glyphicon-chevron-down"></span></div>'.replace(':sort-by', key))
         $tr.append($('<th>' + this.options.fields[key] + '</th>').append($sortBtn))
       }
-      this.$thead.append($tr)
+      if (this.operate) {
+        $tr.append('<th>' + (this.options.operate.field || 'operate') + '</th>')
+      }
+      this.$thead.append($tr);
       var table = this
       this.$thead.find('.btn-sort').click(function () {
         var $this   = $(this),
@@ -192,6 +197,9 @@
         var $tr = $('<tr></tr>')
         for (var key in this.options.fields) {
           $tr.append('<td>' + (getValue(this.visibleData[i], key) || '') + '</td>')
+        }
+        if (this.operate) {
+          $tr.append('<td>' +this.operate.content + '</td>')
         }
         this.$tbody.append($tr)
       }
@@ -305,13 +313,23 @@
       this.renderData()
     },
     
-    event: function (type, fn) {
-      var table = this
-      this.$tbody.on(type, 'tr', function () {
+    event: function (type) {
+      var table = this, childSelector, fn
+      console.log(arguments.length)
+      if (arguments.length > 2) {
+        childSelector = arguments[1]
+        fn = arguments[2]
+      } else {
+        childSelector = ''
+        fn = arguments[1]
+      }
+      this.$tbody.on(type, 'tr ' + childSelector, function () {
         var data = table.visibleData[$(this).index()]
         fn.apply(this, [table.data.indexOf(data), data])
       })
     }
+
+
   }
   
   /**

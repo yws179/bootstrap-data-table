@@ -153,6 +153,11 @@ $('#tb-sample').dataTable('event', 'mouseenter', function () {
 }).dataTable('event', 'mouseleave', function () {
   $(this).css('background', 'white')
 })
+
+// 新功能：待更新截图
+$('#tb-sample').dataTable('event', 'click', '.btn-detail', function (idx, data) {
+  alert("单击" + idx + ",点击列的数据：" + JSON.stringify(data))
+})
 ```
 
 ![](./screenshot/event.gif)

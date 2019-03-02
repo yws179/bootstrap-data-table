@@ -45,7 +45,11 @@
         name: '姓名',
         age: '年龄',
         gender: '性别',
-        'bag.size': '背包大小'
+        'bag.size': '背包大小',
+      },
+      operate: {
+          field: '操作',
+          content: '<button class="btn btn-default btn-detail" type="button">详情</button>'
       },
       buttons: [
         {
@@ -142,16 +146,14 @@
       }
     ])
 
-
-    // 添加点击监听
-    $('#tb-sample').dataTable('event', 'click', function (idx, data) {
-        alert("单击" + idx + ",点击列的数据：" + JSON.stringify(data))
-    })
-
     $('#tb-sample').dataTable('event', 'mouseenter', function () {
       $(this).css('background', 'yellow')
     }).dataTable('event', 'mouseleave', function () {
       $(this).css('background', 'white')
+    })
+
+    $('#tb-sample').dataTable('event', 'click', '.btn-detail', function (idx, data) {
+      alert("单击" + idx + ",点击列的数据：" + JSON.stringify(data))
     })
 </script>
 </html>
