@@ -40,6 +40,14 @@
       refreshable: true,
       pageable: true,
       pageSize: 2,
+      preProcessor: function (data) {
+        if (data.gender == 'male') {
+            data.gender = '男'
+        } else {
+            data.gender = '女'
+        }
+        return data
+      },
       fields: {
         id: '序号',
         name: '姓名',

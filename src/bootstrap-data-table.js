@@ -50,6 +50,8 @@
     this.visibleData = this.data
     
     this.visibleCondition = {}
+
+    this.preProcessor = this.options.preProcessor
     
     this.buttons = this.options.buttons || []
     
@@ -194,9 +196,10 @@
       }
       this.$tbody.html('');
       for (var i in this.visibleData) {
-        var $tr = $('<tr></tr>')
+        var $tr = $('<tr></tr>'),
+            currentData = this.preProcessor ? this.preProcessor(deepClone(this.visibleData[i])) : this.visibleData[i]
         for (var key in this.options.fields) {
-          $tr.append('<td>' + (getValue(this.visibleData[i], key) || '') + '</td>')
+          $tr.append('<td>' + (getValue(currentData, key) || '') + '</td>')
         }
         if (this.operate) {
           $tr.append('<td>' +this.operate.content + '</td>')
@@ -315,7 +318,6 @@
     
     event: function (type) {
       var table = this, childSelector, fn
-      console.log(arguments.length)
       if (arguments.length > 2) {
         childSelector = arguments[1]
         fn = arguments[2]
@@ -480,6 +482,13 @@
       ref[tmpName] = {}
     }
     return recursionDrain(ref[tmpName], name.substr(dotIdx + 1))
+  }
+
+  /**
+   * 克隆對象
+   */
+  function deepClone(source) {
+    return JSON.parse(JSON.stringify(source))
   }
   
 })(jQuery)
