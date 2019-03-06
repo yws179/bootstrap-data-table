@@ -6,7 +6,6 @@
  * Github:  https://github.com/yws179/bootstrap-data-table
  * Licensed under the MIT license
  */
-
 (function ($) {
   
   $.fn.dataTable = function (option) {
@@ -76,7 +75,7 @@
     constructor: DataTable,
     
     _init: function () {
-      this.$table.addClass('table table-striped table-bordered table-hover data-table')
+      this.$table.addClass('table table-striped table-bordered table-hover bs-data-table')
   
       if (this.$caption.length < 1) {
         this.$caption = $('<caption></caption>')
@@ -96,14 +95,14 @@
       this.rendCaption()
       
       this.renderHead()
-      
+
       this.renderData()
     },
     
     rendCaption: function () {
       var $btnGroup = $('<div class="btn-group pull-right"></div>')
       
-      for (var i in this.buttons) {
+      for (var i = 0; i < this.buttons.length; i++) {
         var button = this.buttons[i],
           $btn = $(button.dom)
         for (var event in button.events) {
@@ -115,7 +114,7 @@
       if (this.refreshable) {
         var $btn = $('<button class="btn btn-default btn-refresh" type="button" title="刷新"><span class="glyphicon glyphicon-refresh"></span></button>')
         $btn.on('click', function () {
-          var $filter = this.$thead.find('tr.data-table-filter')
+          var $filter = this.$thead.find('tr.bs-data-table-filter')
           $filter.find(':input').val('')
           $filter.find(':input:first()').change()
         }.bind(this))
@@ -143,7 +142,7 @@
       if (this.operate) {
         $tr.append('<th>' + (this.options.operate.field || 'operate') + '</th>')
       }
-      this.$thead.append($tr);
+      this.$thead.prepend($tr)
       var table = this
       this.$thead.find('.btn-sort').click(function () {
         var $this   = $(this),
@@ -154,12 +153,25 @@
       })
       
       if (this.filterable) {
-        var $filter = $('<tr class="data-table-filter"></tr>')
-        for (var key in this.options.fields) {
-          $filter.append('<th><input class="form-control" name=":name"></th>'.replace(':name', key))
+        if (this.$thead.find('.bs-data-table-filter').length < 1) {
+          var $filter = $('<tr class="bs-data-table-filter"></tr>')
+          for (var key in this.options.fields) {
+            $filter.append('<th><input class="form-control" name=":name"></th>'.replace(':name', key))
+          }
+          if (this.operate) {
+            $filter.append('<th><button class="btn btn-default btn-reset-filter"><span class="glyphicon glyphicon-repeat"></span></button></th>')
+          }
+          this.$thead.append($filter)
         }
-        this.$thead.append($filter)
-        
+
+        var $filter = $filter || this.$thead.find('.bs-data-table-filter')
+        if (this.operate) {
+          $filter.find('.btn-reset-filter').click(function () {
+            var $items = $filter.find(':input')
+            $items.val('')
+            $items.change()
+          })
+        }
         this.$caption.find('.btn-filter').click(function () {
           $(this).toggleClass('active')
           $filter.toggle()
@@ -167,9 +179,9 @@
           $filter.find(':input:first()').change()
         })
         
-        this.$table.on('change keyup paste', '.data-table-filter :input', function () {
+        this.$table.on('change keyup paste', '.bs-data-table-filter :input', function () {
           var filterConditions = {}
-          this.$table.find('.data-table-filter :input').each(function() {
+          this.$table.find('.bs-data-table-filter :input').each(function() {
             var name = $(this).attr('name')
             var value = $(this).val()
             if ($(this).data('strict')) {
@@ -185,17 +197,19 @@
     
     renderData: function (data) {
       this.data = data || this.data
-      this.visibleData = filtrate(data || this.data, this.visibleCondition)
+      this.visibleData = filtrate(this.data, this.visibleCondition)
       var totalPage = Math.ceil(this.visibleData.length / this.pageSize)
       if (this.pageable) {
         if (this.page > totalPage) {
           this.page = totalPage
         }
-        this.visibleData = Array.prototype.slice.call(this.visibleData, (this.page - 1) * this.pageSize,
-          Math.min(this.page * this.pageSize, this.visibleData.length));
+        if (totalPage > 0 && this.page < 1) {
+          this.page = 1
+        }
+        this.visibleData = Array.prototype.slice.call(this.data, (this.page - 1) * this.pageSize, Math.min(this.page * this.pageSize, this.visibleData.length))
       }
-      this.$tbody.html('');
-      for (var i in this.visibleData) {
+      this.$tbody.html('')
+      for (var i = 0; i < this.visibleData.length; i++) {
         var $tr = $('<tr></tr>'),
             currentData = this.preProcessor ? this.preProcessor(deepClone(this.visibleData[i])) : this.visibleData[i]
         for (var key in this.options.fields) {
@@ -213,11 +227,9 @@
     
     renderPagination: function (totalPage) {
       var nums = pageGenerator(this.page, totalPage),
-        $pagination = $('<div class="data-table-pagination"></div>'),
-        $pageSeleter = $('<select class="form-control data-table-page-select"></select>'),
-        $pageNums = $('<ul class="pagination data-table-pagination"></ul>')
-  
-      $pagination.prepend('<span>:page / :totalPage</span>'.replace(':page', this.page).replace(':totalPage', totalPage))
+        $pagination = $('<div class="bs-data-table-pagination"></div>'),
+        $pageSeleter = $('<select class="form-control bs-data-table-page-select"></select>'),
+        $pageNums = $('<ul class="pagination bs-data-table-pagination"></ul>')
   
       var $laquo = $('<li data-page="1"><a href="javascript:void(0);">&laquo;</a></li>')
       if (this.page <= 1) {
@@ -225,12 +237,12 @@
       }
       $pageNums.append($laquo)
       
-      for (var i in nums) {
+      for (var i = 0; i < nums.length; i++) {
         var $pn = $('<li data-page=":num"><a href="javascript:void(0);">:num</a></li>'.replace(/:num/g, nums[i]))
         if (nums[i] == this.page) {
           $pn.addClass('active')
         }
-        $pageNums.append($pn);
+        $pageNums.append($pn)
       }
       
       var $requo = $('<li data-page=":totalPage"><a href="javascript:void(0);">&raquo;</a></li>'.replace(':totalPage', totalPage))
@@ -239,16 +251,19 @@
       }
       $pageNums.append($requo)
       $pagination.append($pageNums)
-  
-      for (var i = 1; i <= totalPage; i++) {
-        var $pageOption = $('<option value=":page">:page</option>'.replace(/:page/g, i))
-        if (i == this.page) {
-          $pageOption.prop('selected', true)
+
+      if (totalPage > 0) {
+        for (var i = 1; i <= totalPage; i++) {
+          var $pageOption = $('<option value=":page">:page</option>'.replace(/:page/g, i));
+          if (i == this.page) {
+            $pageOption.prop('selected', true)
+          }
+          $pageSeleter.append($pageOption)
         }
-        $pageSeleter.append($pageOption);
+        $pagination.append('<span class="bs-data-table-page-total">/&nbsp;:totalPage</span>'.replace(':totalPage', totalPage))
+        $pagination.append($pageSeleter)
       }
-      $pagination.append($pageSeleter)
-      
+
       if (this.$pagination.length > 0) {
         this.$pagination.replaceWith($pagination)
         this.$pagination = $pagination
@@ -258,7 +273,7 @@
       }
   
       var table = this
-      $pagination.on('click change', '.pagination li, .data-table-page-select', function () {
+      $pagination.on('click change', '.pagination li, .bs-data-table-page-select', function () {
         if ($(this).is('.disabled')) return
         if ($(this).is('select')) {
           table.page = $(this).val()
@@ -330,8 +345,6 @@
         fn.apply(this, [table.data.indexOf(data), data])
       })
     }
-
-
   }
   
   /**
