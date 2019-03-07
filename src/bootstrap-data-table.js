@@ -228,7 +228,7 @@
     renderPagination: function (totalPage) {
       var nums = pageGenerator(this.page, totalPage),
         $pagination = $('<div class="bs-data-table-pagination"></div>'),
-        $pageSeleter = $('<select class="form-control bs-data-table-page-select"></select>'),
+        $pageSeleter = $('<input class="form-control bs-data-table-page-select" min="1" max=":totalPage" value=":currentPage">'.replace(':currentPage', this.page).replace(':totalPage', totalPage)),
         $pageNums = $('<ul class="pagination bs-data-table-pagination"></ul>')
   
       var $laquo = $('<li data-page="1"><a href="javascript:void(0);">&laquo;</a></li>')
@@ -253,13 +253,6 @@
       $pagination.append($pageNums)
 
       if (totalPage > 0) {
-        for (var i = 1; i <= totalPage; i++) {
-          var $pageOption = $('<option value=":page">:page</option>'.replace(/:page/g, i));
-          if (i == this.page) {
-            $pageOption.prop('selected', true)
-          }
-          $pageSeleter.append($pageOption)
-        }
         $pagination.append('<span class="bs-data-table-page-total">/&nbsp;:totalPage</span>'.replace(':totalPage', totalPage))
         $pagination.append($pageSeleter)
       }
