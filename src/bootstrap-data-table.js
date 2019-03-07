@@ -273,13 +273,12 @@
       }
   
       var table = this
-      $pagination.on('click change', '.pagination li, .bs-data-table-page-select', function () {
+      $pagination.on('change', '.bs-data-table-page-select', function () {
+        table.page = $(this).val()
+        table.renderData()
+      }).on('click', '.pagination li', function () {
         if ($(this).is('.disabled')) return
-        if ($(this).is('select')) {
-          table.page = $(this).val()
-        } else {
-          table.page = $(this).data('page')
-        }
+        table.page = $(this).data('page')
         table.renderData()
       })
     },
