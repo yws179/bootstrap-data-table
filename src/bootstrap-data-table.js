@@ -206,7 +206,7 @@
         if (totalPage > 0 && this.page < 1) {
           this.page = 1
         }
-        this.visibleData = Array.prototype.slice.call(this.data, (this.page - 1) * this.pageSize, Math.min(this.page * this.pageSize, this.visibleData.length))
+        this.visibleData = Array.prototype.slice.call(this.visibleData, (this.page - 1) * this.pageSize, Math.min(this.page * this.pageSize, this.visibleData.length))
       }
       this.$tbody.html('')
       for (var i = 0; i < this.visibleData.length; i++) {
