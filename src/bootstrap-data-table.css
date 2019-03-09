@@ -1,7 +1,7 @@
 /*
  * Plugin:  bootstrap-data-table
  * Author:  Weisen Yan (严伟森)
- * Version: 0.1.0
+ * Version: 0.1.1
  * Email:   yws179@gmail.com
  * Github:  https://github.com/yws179/bootstrap-data-table
  * Licensed under the MIT license
@@ -63,12 +63,17 @@
     line-height: 34px;
 }
 
-.bs-data-table-pagination .bs-data-table-page-select {
-    width: 100px;
+.bs-data-table-pagination .bs-data-table-page-select,
+.bs-data-table-pagination .bs-data-table-size-select {
+    width: 70px;
     float: right;
 }
 
-.bs-data-table-pagination .bs-data-table-page-select option {
+.bs-data-table-pagination .bs-data-table-size-select {
+    margin: 0 10px;
+}
+
+.bs-data-table-pagination .bs-data-table-size-select option {
     cursor: pointer;
 }
 

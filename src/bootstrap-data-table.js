@@ -63,6 +63,8 @@
     this.pageable = this.options.pageable
     
     this.pageSize = this.options.pageSize || 10
+
+    this.sizeSelector = this.options.sizeSelector || {}
     
     this.page = this.options.page || 1
     
@@ -209,16 +211,20 @@
         this.visibleData = Array.prototype.slice.call(this.visibleData, (this.page - 1) * this.pageSize, Math.min(this.page * this.pageSize, this.visibleData.length))
       }
       this.$tbody.html('')
-      for (var i = 0; i < this.visibleData.length; i++) {
-        var $tr = $('<tr></tr>'),
-            currentData = this.preProcessor ? this.preProcessor(deepClone(this.visibleData[i])) : this.visibleData[i]
-        for (var key in this.options.fields) {
-          $tr.append('<td>' + (getValue(currentData, key) || '') + '</td>')
+      if (this.visibleData.length < 1) {
+        this.$tbody.append('<tr><td class="text-center" colspan=":colspan"> ---- ● ----</td></tr>'.replace(':colspan', this.$thead.find('tr:first() th').length))
+      } else {
+        for (var i = 0; i < this.visibleData.length; i++) {
+          var $tr = $('<tr></tr>'),
+              currentData = this.preProcessor ? this.preProcessor(deepClone(this.visibleData[i])) : this.visibleData[i]
+          for (var key in this.options.fields) {
+            $tr.append('<td>' + (getValue(currentData, key) || '') + '</td>')
+          }
+          if (this.operate) {
+            $tr.append('<td>' +this.operate.content + '</td>')
+          }
+          this.$tbody.append($tr)
         }
-        if (this.operate) {
-          $tr.append('<td>' +this.operate.content + '</td>')
-        }
-        this.$tbody.append($tr)
       }
       if (this.pageable) {
         this.renderPagination(totalPage)
@@ -257,6 +263,8 @@
         $pagination.append($pageSeleter)
       }
 
+      $pagination.append(this.buildSizeSelector())
+
       if (this.$pagination.length > 0) {
         this.$pagination.replaceWith($pagination)
         this.$pagination = $pagination
@@ -273,7 +281,26 @@
         if ($(this).is('.disabled')) return
         table.page = $(this).data('page')
         table.renderData()
+      }).on('change', '.bs-data-table-size-select', function () {
+        table.pageSize = $(this).val()
+        table.renderData()
       })
+    },
+
+    buildSizeSelector: function () {
+      var title = this.sizeSelector.title,
+          sizeArr = this.sizeSelector instanceof Array ? this.sizeSelector : this.sizeSelector.list,
+          $selector =  $('<select class="form-control bs-data-table-size-select"></select>')
+      if (sizeArr) {
+        for (var i = 0; i < sizeArr.length; i++) {
+          $selector.append('<option value="' + sizeArr[i] + '">' + sizeArr[i] + '</option>')
+        }
+        $selector.find('option[value="' + this.pageSize + '"]').prop('selected', true)
+      }
+      if (title) {
+        $selector = $('<div class="pull-right"><span>' + title + '</span></div>').append($selector)
+      }
+      return $selector;
     },
     
     getIdx: function (data, fn) {
