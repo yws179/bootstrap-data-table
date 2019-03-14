@@ -60,6 +60,10 @@
 
     this.operate = this.options.operate
 
+    this.totalLabel = this.options.totalLabel || ''
+
+    this.totalElements = 0
+
     this.pageable = this.options.pageable
     
     this.pageSize = this.options.pageSize || 10
@@ -200,6 +204,7 @@
     renderData: function (data) {
       this.data = data || this.data
       this.visibleData = filtrate(this.data, this.visibleCondition)
+      this.totalElements = this.visibleData.length
       var totalPage = Math.ceil(this.visibleData.length / this.pageSize)
       if (this.pageable) {
         if (this.page > totalPage) {
@@ -212,7 +217,7 @@
       }
       this.$tbody.html('')
       if (this.visibleData.length < 1) {
-        this.$tbody.append('<tr><td class="text-center" colspan=":colspan"> ---- ● ----</td></tr>'.replace(':colspan', this.$thead.find('tr:first() th').length))
+        this.$tbody.append('<tr><td class="text-center" colspan=":colspan"> ---- · ---- </td></tr>'.replace(':colspan', this.$thead.find('tr:first() th').length))
       } else {
         for (var i = 0; i < this.visibleData.length; i++) {
           var $tr = $('<tr></tr>'),
@@ -236,7 +241,9 @@
         $pagination = $('<div class="bs-data-table-pagination"></div>'),
         $pageSeleter = $('<input class="form-control bs-data-table-page-select" type="number" min="1" max=":totalPage" value=":currentPage">'.replace(':currentPage', this.page).replace(':totalPage', totalPage)),
         $pageNums = $('<ul class="pagination bs-data-table-pagination"></ul>')
-  
+
+      $pagination.append('<span>' + this.totalLabel.replace('${total}', this.totalElements) + '</span>')
+
       var $laquo = $('<li data-page="1"><a href="javascript:void(0);">&laquo;</a></li>')
       if (this.page <= 1) {
         $laquo.addClass('disabled')

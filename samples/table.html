@@ -40,6 +40,11 @@
       refreshable: true,
       pageable: true,
       pageSize: 2,
+      sizeSelector: {
+          title: '记录数',
+          list: [2, 4, 6]
+      },
+      totalLabel: '共${total}个记录',
       preProcessor: function (data) {
         if (data.gender == 'male') {
             data.gender = '男'
