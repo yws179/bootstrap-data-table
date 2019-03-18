@@ -5,6 +5,8 @@ Bootstrap DataTable 是一个可以简单快速创建一个功能齐全的数据
 [![](https://img.shields.io/github/release/yws179/bootstrap-data-table.svg)](https://github.com/yws179/bootstrap-data-table/releases)
 [![](https://img.shields.io/github/license/yws179/bootstrap-data-table.svg)](https://github.com/yws179/bootstrap-data-table/blob/master/LICENSE)
 
+![](./screenshot/table_full.gif)
+
 ## 功能
 - [x] 基本数据渲染
 - [x] 数据过滤
@@ -17,6 +19,7 @@ Bootstrap DataTable 是一个可以简单快速创建一个功能齐全的数据
 - [x] 数据列事件监听
 - [x] 自定义按钮组
 - [x] 分页
+- [x] 每页数据量切换
 
 ## 基本演示
 
