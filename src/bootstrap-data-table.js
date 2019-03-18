@@ -226,7 +226,13 @@
             $tr.append('<td>' + (getValue(currentData, key) || '') + '</td>')
           }
           if (this.operate) {
-            $tr.append('<td>' +this.operate.content + '</td>')
+            if ('string' === typeof this.operate.content) {
+              $tr.append('<td>' + this.operate.content + '</td>')
+            } else if ('function' === typeof this.operate.content) {
+              $tr.append('<td>' + this.operate.content(currentData) + '</td>')
+            } else {
+              $tr.append('<td></td>')
+            }
           }
           this.$tbody.append($tr)
         }
