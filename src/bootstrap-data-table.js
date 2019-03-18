@@ -367,7 +367,8 @@
         fn = arguments[1]
       }
       this.$tbody.on(type, 'tr ' + childSelector, function () {
-        var data = table.visibleData[$(this).index()]
+        var idx = $(this).is('tr') ? $(this).index() : $(this).parentsUntil('tbody', 'tr').index(),
+            data = table.visibleData[idx]
         fn.apply(this, [table.data.indexOf(data), data])
       })
     }
