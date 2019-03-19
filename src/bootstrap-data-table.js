@@ -229,7 +229,7 @@
             if ('string' === typeof this.operate.content) {
               $tr.append('<td>' + this.operate.content + '</td>')
             } else if ('function' === typeof this.operate.content) {
-              $tr.append('<td>' + this.operate.content(currentData) + '</td>')
+              $tr.append('<td>' + (this.operate.content(currentData) || '') + '</td>')
             } else {
               $tr.append('<td></td>')
             }
